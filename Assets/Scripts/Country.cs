@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class Country : MonoBehaviour
 {
-    private int totalPopulation;
-    private int populationDensity;
-    private int healthRating;
+    private Population people;
     private LinkedList<Country> transportRoutes;
+    private int healthRating;
 
-    public Country(int totalPopulation, int populationDensity, int healthRating)
+    public Country(Population people, int healthRating)
     {
-        this.totalPopulation = totalPopulation;
-        this.populationDensity = populationDensity;
+        this.people = people;
+        transportRoutes = new LinkedList<Country>();
         this.healthRating = healthRating;
     }
 
