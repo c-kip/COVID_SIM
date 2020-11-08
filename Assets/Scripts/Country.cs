@@ -26,10 +26,12 @@ public class Country : MonoBehaviour
         
         foreach (Virus.Stages stage in Enum.GetValues(typeof(Virus.Stages)))
         {
+            /*
             infSpreadRates.Add(stage, Virus.infSpreadRates[stage] * invHealthRating);
             infStageIncRates.Add(stage, new double[] { Virus.infStageIncRates[stage][0] * invHealthRating, Virus.infStageIncRates[stage][1] * invHealthRating });
             infStageDecRates.Add(stage, new double[] { Virus.infStageDecRates[stage][0] * invHealthRating, Virus.infStageDecRates[stage][1] * invHealthRating });
             infDetectRates.Add(stage, Virus.infDetectRates[stage] * invHealthRating);
+            */
         }
     }
 
