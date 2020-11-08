@@ -112,6 +112,11 @@ public class Country
         return countryName;
     }
 
+    public double getInvHealthRating()
+    {
+        return invHealthRating;
+    }
+
     public bool Equals(Country other)
     {
         if (other == null)
@@ -132,6 +137,7 @@ public class Country
                 "Health Rating: " + healthRating + "\n" +
                 "Hospital Rating: " + hospitalRating + "\n" +
                 "Population: " + people.getTotal() + "\n" +
+                "Deceased: " + people.getDeceased() + "\n" +
                 "Healthy: " + people.getHealthy() + "\n" +
                 "Immune: " + people.getImmune() + "\n" +
                 "Infected: " + people.getInfected() + "\n" +

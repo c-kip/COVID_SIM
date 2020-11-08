@@ -96,27 +96,38 @@ public class Population
         for (int i = 0; i <= 1; i++)
         {
             //Map an increment in stage severity
-            moveInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Asymptotic][i] * getAsymptotic(i), 1, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, Virus.Stages.Mild, i);
-            moveInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Mild][i] * getMild(i), 1, 0, getMild(i)), Virus.Stages.Mild, Virus.Stages.Severe, i);
-            moveInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Severe][i] * getSevere(i), 1, 0, getSevere(i)), Virus.Stages.Severe, Virus.Stages.Deadly, i);
-            rmInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Deadly][i] * getDeadly(i), 1, 0, getDeadly(i)), Virus.Stages.Deadly, 1, i);
+            moveInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Asymptotic][i] * getAsymptotic(i), getAsymptotic(i) / 100, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, Virus.Stages.Mild, i);
+            moveInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Mild][i] * getMild(i), getMild(i) / 100, 0, getMild(i)), Virus.Stages.Mild, Virus.Stages.Severe, i);
+            moveInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Severe][i] * getSevere(i), getSevere(i) / 100, 0, getSevere(i)), Virus.Stages.Severe, Virus.Stages.Deadly, i);
+            rmInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Deadly][i] * getDeadly(i), getDeadly(i) / 100, 0, getDeadly(i)), Virus.Stages.Deadly, 1, i);
 
             //Map a decrement in stage severity
-            moveInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Deadly][i] * getDeadly(i), 1, 0, getDeadly(i)), Virus.Stages.Deadly, Virus.Stages.Severe, i);
-            moveInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Severe][i] * getSevere(i), 1, 0, getSevere(i)), Virus.Stages.Severe, Virus.Stages.Mild, i);
-            rmInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Mild][i] * getMild(i), 1, 0, getMild(i)), Virus.Stages.Mild, 0, i);
-            rmInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Asymptotic][i] * getAsymptotic(i), 1, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, 0, i);
+            moveInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Deadly][i] * getDeadly(i), getDeadly(i) / 100, 0, getDeadly(i)), Virus.Stages.Deadly, Virus.Stages.Severe, i);
+            moveInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Severe][i] * getSevere(i), getSevere(i) / 100, 0, getSevere(i)), Virus.Stages.Severe, Virus.Stages.Mild, i);
+            rmInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Mild][i] * getMild(i), getMild(i) / 100, 0, getMild(i)), Virus.Stages.Mild, 0, i);
+            rmInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Asymptotic][i] * getAsymptotic(i), getAsymptotic(i) / 100, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, 0, i);
         }
 
         //Map a change from "standard" to "healing"
-        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Asymptotic] * getAsymptotic(0), 1, 0, getAsymptotic(0)), Virus.Stages.Asymptotic);
-        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Severe] * getSevere(0), 1, 0, getSevere(0)), Virus.Stages.Severe);
-        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Mild] * getMild(0), 1, 0, getMild(0)), Virus.Stages.Mild);
-        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Deadly] * getDeadly(0), 1, 0, getDeadly(0)), Virus.Stages.Deadly);
+        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Asymptotic] * getAsymptotic(0), getAsymptotic(0) / 100, 0, getAsymptotic(0)), Virus.Stages.Asymptotic);
+        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Mild] * getMild(0), getMild(0) / 100, 0, getMild(0)), Virus.Stages.Mild);
+        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Severe] * getSevere(0), getSevere(0) / 100, 0, getSevere(0)), Virus.Stages.Severe);
+        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Deadly] * getDeadly(0), getDeadly(0) / 100, 0, getDeadly(0)), Virus.Stages.Deadly);
 
         //Update the infection dot
         float scale = (float)getInfected() / (float)getTotal();
         infectionDot.transform.localScale = new UnityEngine.Vector3(scale, scale);
+
+        if (total <= 0)
+        {
+            total = 0;
+            Main.pause = true;
+        }
+        if (healthy <= 0)
+        {
+            healthy = 0;
+            Main.pause = true;
+        }
     }
 
     public int getTotal()

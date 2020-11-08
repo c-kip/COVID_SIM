@@ -15,6 +15,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,10 +26,12 @@ public class Main : MonoBehaviour
     private Country Canada;
     private static LinkedList<Country> countries;
     private const int MAX_DAYS = 365;
+    private const float TIME_DELAY = 0.1f;
     private int days;
     private const bool DEBUG = false;
     private string statsCountryName = "";
-    public static int planeCount;
+    public static bool pause = false;
+    private bool lastPause = false;
 
     //UI elements
     public GameObject statsBackground;
@@ -53,7 +56,7 @@ public class Main : MonoBehaviour
     private Vector3 EU = new Vector3(  80,  90, 0) + canvasPos;
     private Vector3 AF = new Vector3(  50, -30, 0) + canvasPos;
     private Vector3 AS = new Vector3( 250,  80, 0) + canvasPos;
-    private Vector3 OC = new Vector3( 380,-120, 0) + canvasPos;
+    private Vector3 OC = new Vector3( 380,-110, 0) + canvasPos;
 
     //Debugging tools
     public Text northAmerica;
@@ -92,12 +95,12 @@ public class Main : MonoBehaviour
 
         //Create the countries (or continents) that we'll use
         countries = new LinkedList<Country>();
-        countries.AddLast(new Country("North America", new Population(368869647, 100000000, 0, 0, 0, dot1), 1, 1));
-        countries.AddLast(new Country("South America", new Population(431969015, 0, 0, 0, 0, dot2), 40, 50));
-        countries.AddLast(new Country("Europe", new Population(747793556, 0, 0, 0, 0, dot3), 50, 60));
-        countries.AddLast(new Country("Africa", new Population(1347333004, 0, 0, 0, 0, dot4), 30, 30));
-        countries.AddLast(new Country("Asia", new Population(1654850282/*4654850282*/, 0, 0, 0, 0, dot5), 60, 50));
-        countries.AddLast(new Country("Oceania", new Population(38820000, 0, 0, 0, 0, dot6), 70, 70));
+        countries.AddLast(new Country("North America", new Population(368869647, 0/*11234657*/, 0, 0, 0, dot1), 40, 50));
+        countries.AddLast(new Country("South America", new Population(431969015, 0/*8953760*/, 0, 0, 0, dot2), 40, 50));
+        countries.AddLast(new Country("Europe", new Population(747793556, 0/*12334693*/, 0, 0, 0, dot3), 50, 60));
+        countries.AddLast(new Country("Africa", new Population(1347333004, 0/*8836579*/, 0, 0, 0, dot4), 30, 30));
+        countries.AddLast(new Country("Asia", new Population(1654850282/*4654850282*/, 1/*15463820*/, 0, 0, 0, dot5), 60, 50));
+        countries.AddLast(new Country("Oceania", new Population(38820000, 0/*6431068*/, 0, 0, 0, dot6), 70, 70));
 
         //Link each population to it's country/continent
         foreach (Country place in countries)
@@ -105,17 +108,15 @@ public class Main : MonoBehaviour
             place.setPopParent();
         }
 
-        //Add transportation routes
-        countries.ElementAt(0).addTransportRoute(countries.ElementAt(1), 0.1);
-        countries.ElementAt(1).addTransportRoute(countries.ElementAt(0), 0.1);
-        countries.ElementAt(0).addTransportRoute(countries.ElementAt(2), 0.1);
-        countries.ElementAt(2).addTransportRoute(countries.ElementAt(0), 0.1);
-        countries.ElementAt(0).addTransportRoute(countries.ElementAt(3), 0.1);
-        countries.ElementAt(3).addTransportRoute(countries.ElementAt(0), 0.1);
-        countries.ElementAt(0).addTransportRoute(countries.ElementAt(4), 0.1);
-        countries.ElementAt(4).addTransportRoute(countries.ElementAt(0), 0.1);
-        countries.ElementAt(0).addTransportRoute(countries.ElementAt(5), 0.1);
-        countries.ElementAt(5).addTransportRoute(countries.ElementAt(0), 0.1);
+        //Add transportation routes connecting all countries
+        for (int i = 0; i < countries.Count; i++)
+        {
+            for (int j = i + 1; j < countries.Count; j++)
+            {
+                countries.ElementAt(i).addTransportRoute(countries.ElementAt(j), countries.ElementAt(j).getInvHealthRating());
+                countries.ElementAt(j).addTransportRoute(countries.ElementAt(i), countries.ElementAt(i).getInvHealthRating());
+            }
+        }
 
         //Create a Plane for each transportation route
         Vector3 start;
@@ -136,7 +137,7 @@ public class Main : MonoBehaviour
                 planeImage = Instantiate(planePrefab, start, rot);
                 planeImage.transform.parent = canvas.transform;
                 planeImage.transform.SetSiblingIndex(3); //Set the planes in front of the maps but behind everything else
-                planes.AddLast(new Plane(start, end, rot, planeImage, route.getTravelProb()*300));
+                planes.AddLast(new Plane(start, end, rot, planeImage, route.getTravelProb()*600));
             }
         }
 
@@ -163,18 +164,23 @@ public class Main : MonoBehaviour
         {
             plane.movePlane();
         }
+
+        if (!pause && lastPause)
+        {
+            lastPause = false;
+            StartCoroutine(dailyCycle(days));
+        }
+        else if (pause && !lastPause)
+        {
+            lastPause = true;
+        }
     }
 
     //Create a Coroutine 
     public IEnumerator dailyCycle(int days)
     {
-        if (days > MAX_DAYS)
-        {
-            yield return null;
-        }
-
         //yield on a new YieldInstruction that waits for x seconds.
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(TIME_DELAY);
 
         Population pop;
         String debug;
@@ -226,8 +232,11 @@ public class Main : MonoBehaviour
 
         //Increment the day counter and go again
         days++;
-        dayCounter.text = "Day: " + days;
-        StartCoroutine(dailyCycle(days));
+        dayCounter.text = "Day: " + days + "\nPause: " + pause;
+        if (!pause && days < MAX_DAYS)
+        {
+            StartCoroutine(dailyCycle(days));
+        }
     }
 
     // Calculates a random number based on gaussian distribution for the given mean and standard deviation
@@ -314,5 +323,10 @@ public class Main : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public static void pauseSim()
+    {
+        pause = !pause;
     }
 }
