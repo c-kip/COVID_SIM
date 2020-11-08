@@ -43,6 +43,7 @@ public class Main : MonoBehaviour
     public Button africaButton;
     public Button asiaButton;
     public Button oceaniaButton;
+    public Button pauseButton;
 
     //Animated elements
     private LinkedList<Plane> planes = new LinkedList<Plane>();
@@ -148,27 +149,31 @@ public class Main : MonoBehaviour
         africaButton.onClick.AddListener(delegate { displayCountryStats(countries.ElementAt(3)); });
         asiaButton.onClick.AddListener(delegate { displayCountryStats(countries.ElementAt(4)); });
         oceaniaButton.onClick.AddListener(delegate { displayCountryStats(countries.ElementAt(5)); });
+        pauseButton.onClick.AddListener(delegate { pauseSim(); });
 
         //UI elements
         statsBackground.SetActive(false);
         countryStats.text = "";
 
         days = 0;
-        StartCoroutine(dailyCycle(days));
+        StartCoroutine(dailyCycle());
     }
 
     //Called once per frame
     public void Update()
     {
-        foreach (Plane plane in planes)
+        if (!pause)
         {
-            plane.movePlane();
+            foreach (Plane plane in planes)
+            {
+                plane.movePlane();
+            }
         }
 
         if (!pause && lastPause)
         {
             lastPause = false;
-            StartCoroutine(dailyCycle(days));
+            StartCoroutine(dailyCycle());
         }
         else if (pause && !lastPause)
         {
@@ -177,7 +182,7 @@ public class Main : MonoBehaviour
     }
 
     //Create a Coroutine 
-    public IEnumerator dailyCycle(int days)
+    public IEnumerator dailyCycle()
     {
         //yield on a new YieldInstruction that waits for x seconds.
         yield return new WaitForSeconds(TIME_DELAY);
@@ -232,10 +237,14 @@ public class Main : MonoBehaviour
 
         //Increment the day counter and go again
         days++;
-        dayCounter.text = "Day: " + days + "\nPause: " + pause;
+        dayCounter.text = "Day: " + days;
+        if (pause)
+        {
+            dayCounter.text += "\nPaused";
+        }
         if (!pause && days < MAX_DAYS)
         {
-            StartCoroutine(dailyCycle(days));
+            StartCoroutine(dailyCycle());
         }
     }
 
@@ -325,8 +334,15 @@ public class Main : MonoBehaviour
         return null;
     }
 
-    public static void pauseSim()
+    public void pauseSim()
     {
         pause = !pause;
+        if (pause)
+        {
+            pauseButton.transform.GetChild(0).gameObject.GetComponent<Text>().text = ">";
+        } else
+        {
+            pauseButton.transform.GetChild(0).gameObject.GetComponent<Text>().text = "||";
+        }
     }
 }
