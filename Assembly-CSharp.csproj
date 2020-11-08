@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Country.cs" />
     <Compile Include="Assets\Scripts\Main.cs" />
+    <Compile Include="Assets\Scripts\Plane.cs" />
     <Compile Include="Assets\Scripts\Population.cs" />
     <Compile Include="Assets\Scripts\TravelRoute.cs" />
     <Compile Include="Assets\Scripts\Virus.cs" />

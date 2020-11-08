@@ -13,6 +13,7 @@ public class TravelRoute
         this.first = first;
         this.second = second;
         this.travelProb = travelProb;
+        Main.planeCount++;
     }
 
     public Country getFirst()

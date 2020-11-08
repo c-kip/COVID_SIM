@@ -7,14 +7,13 @@ public class Country : MonoBehaviour
     private string countryName;
     private Population people;
     private LinkedList<TravelRoute> transportRoutes;
-    private int healthRating;
-    private double travelProb;
+    private double healthRating;
 
-    public Country(string countryName, Population people, double travelProb)
+    public Country(string countryName, Population people, double healthRating)
     {
         this.countryName = countryName;
         this.people = people;
-        this.travelProb = travelProb;
+        this.healthRating = healthRating;
         transportRoutes = new LinkedList<TravelRoute>();
     }
 
@@ -29,28 +28,27 @@ public class Country : MonoBehaviour
                 otherPeople = route.getFirst().getPeople();
             } else
             {
-                Debug.Log("Route from " + this.countryName + " to " + route.getSecond().getName());
                 otherPeople = route.getSecond().getPeople();
             }
             for (int i = 0; i <= 1; i++)
             {
                 //Asymptomatic
-                travellers = Main.calcRandNum(travelProb * people.getAsymptotic(i), 1, 0, people.getAsymptotic(i));
+                travellers = Main.calcRandNum(route.getTravelProb() * people.getAsymptotic(i), 1, 0, people.getAsymptotic(i));
                 people.rmInf(travellers, Virus.Stages.Asymptotic, 2, i);
                 otherPeople.addInf(travellers, Virus.Stages.Asymptotic, i);
 
                 //Mild
-                travellers = Main.calcRandNum(travelProb * people.getMild(i), 1, 0, people.getMild(i));
+                travellers = Main.calcRandNum(route.getTravelProb() * people.getMild(i), 1, 0, people.getMild(i));
                 people.rmInf(travellers, Virus.Stages.Mild, 2, i);
                 otherPeople.addInf(travellers, Virus.Stages.Mild, i);
 
                 //Severe
-                travellers = Main.calcRandNum(travelProb * people.getSevere(i), 1, 0, people.getSevere(i));
+                travellers = Main.calcRandNum(route.getTravelProb() * people.getSevere(i), 1, 0, people.getSevere(i));
                 people.rmInf(travellers, Virus.Stages.Severe, 2, i);
                 otherPeople.addInf(travellers, Virus.Stages.Severe, i);
 
                 //Deadly
-                travellers = Main.calcRandNum(travelProb * people.getDeadly(i), 1, 0, people.getDeadly(i));
+                travellers = Main.calcRandNum(route.getTravelProb() * people.getDeadly(i), 1, 0, people.getDeadly(i));
                 people.rmInf(travellers, Virus.Stages.Deadly, 2, i);
                 otherPeople.addInf(travellers, Virus.Stages.Deadly, i);
             }
@@ -60,6 +58,11 @@ public class Country : MonoBehaviour
     public void addTransportRoute(Country other, double travelProb)
     {
         transportRoutes.AddLast(new TravelRoute(this, other, travelProb));
+    }
+
+    public LinkedList<TravelRoute> getTransportRoutes()
+    {
+        return transportRoutes;
     }
 
     public Population getPeople()
