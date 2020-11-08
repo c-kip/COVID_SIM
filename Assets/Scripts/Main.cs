@@ -161,30 +161,14 @@ public class Main : MonoBehaviour
             //Update the pop-up if needed
             if (place.getName() == statsCountryName)
             {
-                countryStats.text = place.getName() + "\n" +
-                                    "Population: " + pop.getTotal() + "\n" +
-                                    "Healthy: " + pop.getHealthy() + "\n" +
-                                    "Immune: " + pop.getImmune() + "\n" +
-                                    "Infected: " + pop.getInfected() + "\n" +
-                                    "Asymptotic: " + pop.getAsymptotic(2) + " - Undetected:" + pop.getAsymptotic(0) + " - Detected:" + pop.getAsymptotic(1) + "\n" +
-                                    "Mild: " + pop.getMild(2) + " - Undetected:" + pop.getMild(0) + " - Detected:" + pop.getMild(1) + "\n" +
-                                    "Severe: " + pop.getSevere(2) + " - Undetected:" + pop.getSevere(0) + " - Detected:" + pop.getSevere(1) + "\n" +
-                                    "Deadly: " + pop.getDeadly(2) + " - Undetected:" + pop.getDeadly(0) + " - Detected:" + pop.getDeadly(1);
+                countryStats.text = place.ToString();
             }
 
             //Debug info
             if (DEBUG)
             {
-             // Debug information
-             debug = place.getName() + "\n" +
-                     "Population: " + pop.getTotal() + "\n" +
-                     "Healthy: " + pop.getHealthy() + "\n" +
-                     "Immune: " + pop.getImmune() + "\n" +
-                     "Infected: " + pop.getInfected() + "\n" +
-                     "Asymptotic: " + pop.getAsymptotic(2) + " - Undetected:" + pop.getAsymptotic(0) + " - Detected:" + pop.getAsymptotic(1) + "\n" +
-                     "Mild: " + pop.getMild(2) + " - Undetected:" + pop.getMild(0) + " - Detected:" + pop.getMild(1) + "\n" +
-                     "Severe: " + pop.getSevere(2) + " - Undetected:" + pop.getSevere(0) + " - Detected:" + pop.getSevere(1) + "\n" +
-                     "Deadly: " + pop.getDeadly(2) + " - Undetected:" + pop.getDeadly(0) + " - Detected:" + pop.getDeadly(1);
+                // Debug information
+                debug = place.ToString();
 
                 //Put the debug info on the screen
                 switch (place.getName())
@@ -285,15 +269,7 @@ public class Main : MonoBehaviour
         {
             Population pop = dispCountry.getPeople();
             statsBackground.SetActive(true);
-            countryStats.text = dispCountry.getName() + "\n" +
-                                "Population: " + pop.getTotal() + "\n" +
-                                "Healthy: " + pop.getHealthy() + "\n" +
-                                "Immune: " + pop.getImmune() + "\n" +
-                                "Infected: " + pop.getInfected() + "\n" +
-                                "Asymptotic: " + pop.getAsymptotic(2) + " - Undetected:" + pop.getAsymptotic(0) + " - Detected:" + pop.getAsymptotic(1) + "\n" +
-                                "Mild: " + pop.getMild(2) + " - Undetected:" + pop.getMild(0) + " - Detected:" + pop.getMild(1) + "\n" +
-                                "Severe: " + pop.getSevere(2) + " - Undetected:" + pop.getSevere(0) + " - Detected:" + pop.getSevere(1) + "\n" +
-                                "Deadly: " + pop.getDeadly(2) + " - Undetected:" + pop.getDeadly(0) + " - Detected:" + pop.getDeadly(1);
+            countryStats.text = dispCountry.ToString();
             statsCountryName = dispCountry.getName();
         }
     }

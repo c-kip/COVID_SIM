@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,15 +9,31 @@ public class Country : MonoBehaviour
     private Population people;
     private LinkedList<TravelRoute> transportRoutes;
     private double healthRating;
+    private double invHealthRating;
+
+    public static Dictionary<Virus.Stages, double> infSpreadRates = new Dictionary<Virus.Stages, double>();
+    public static Dictionary<Virus.Stages, double[]> infStageIncRates = new Dictionary<Virus.Stages, double[]>();
+    public static Dictionary<Virus.Stages, double[]> infStageDecRates = new Dictionary<Virus.Stages, double[]>();
+    public static Dictionary<Virus.Stages, double> infDetectRates = new Dictionary<Virus.Stages, double>();
 
     public Country(string countryName, Population people, double healthRating)
     {
         this.countryName = countryName;
         this.people = people;
         this.healthRating = healthRating;
+        this.invHealthRating = Math.Pow(healthRating, -1);
         transportRoutes = new LinkedList<TravelRoute>();
+        
+        foreach (Virus.Stages stage in Enum.GetValues(typeof(Virus.Stages)))
+        {
+            infSpreadRates.Add(stage, Virus.infSpreadRates[stage] * invHealthRating);
+            infStageIncRates.Add(stage, new double[] { Virus.infStageIncRates[stage][0] * invHealthRating, Virus.infStageIncRates[stage][1] * invHealthRating });
+            infStageDecRates.Add(stage, new double[] { Virus.infStageDecRates[stage][0] * invHealthRating, Virus.infStageDecRates[stage][1] * invHealthRating });
+            infDetectRates.Add(stage, Virus.infDetectRates[stage] * invHealthRating);
+        }
     }
 
+    //Transport random numbers of gaussian distributed passengers between countries
     public void transportInf()
     {
         int travellers = 0;
@@ -55,6 +72,7 @@ public class Country : MonoBehaviour
         }
     }
 
+    //Add a transport route to this country
     public void addTransportRoute(Country other, double travelProb)
     {
         transportRoutes.AddLast(new TravelRoute(this, other, travelProb));
@@ -86,5 +104,20 @@ public class Country : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    
+    public override string ToString()
+    {
+        return this.getName() + "\n" +
+                "Health Rating: " + healthRating + "\n" +
+                "Population: " + people.getTotal() + "\n" +
+                "Healthy: " + people.getHealthy() + "\n" +
+                "Immune: " + people.getImmune() + "\n" +
+                "Infected: " + people.getInfected() + "\n" +
+                "Asymptotic: " + people.getAsymptotic(2) + " - Undetected:" + people.getAsymptotic(0) + " - Detected:" + people.getAsymptotic(1) + "\n" +
+                "Mild: " + people.getMild(2) + " - Undetected:" + people.getMild(0) + " - Detected:" + people.getMild(1) + "\n" +
+                "Severe: " + people.getSevere(2) + " - Undetected:" + people.getSevere(0) + " - Detected:" + people.getSevere(1) + "\n" +
+                "Deadly: " + people.getDeadly(2) + " - Undetected:" + people.getDeadly(0) + " - Detected:" + people.getDeadly(1);
     }
 }
