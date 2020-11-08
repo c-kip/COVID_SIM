@@ -44,6 +44,7 @@ public class Main : MonoBehaviour
     //Animated elements
     private LinkedList<Plane> planes = new LinkedList<Plane>();
     public Image planePrefab;
+    public Image dotPrefab;
 
     //Locations and rotations
     private static Vector3 canvasPos = new Vector3(546, 231.5f, 0);
@@ -69,14 +70,34 @@ public class Main : MonoBehaviour
         //Create the randomizer
         rng = new System.Random();
 
+        //Create the infection dots
+        Image dot1 = Instantiate(dotPrefab, NA, Quaternion.identity);
+        dot1.transform.parent = canvas.transform;
+        dot1.transform.SetSiblingIndex(3); //Set the dots in front of the maps but behind everything else
+        Image dot2 = Instantiate(dotPrefab, SA, Quaternion.identity);
+        dot2.transform.parent = canvas.transform;
+        dot2.transform.SetSiblingIndex(3);
+        Image dot3 = Instantiate(dotPrefab, EU, Quaternion.identity);
+        dot3.transform.parent = canvas.transform;
+        dot3.transform.SetSiblingIndex(3);
+        Image dot4 = Instantiate(dotPrefab, AF, Quaternion.identity);
+        dot4.transform.parent = canvas.transform;
+        dot4.transform.SetSiblingIndex(3);
+        Image dot5 = Instantiate(dotPrefab, AS, Quaternion.identity);
+        dot5.transform.parent = canvas.transform;
+        dot5.transform.SetSiblingIndex(3);
+        Image dot6 = Instantiate(dotPrefab, OC, Quaternion.identity);
+        dot6.transform.parent = canvas.transform;
+        dot6.transform.SetSiblingIndex(3);
+
         //Create the countries (or continents) that we'll use
         countries = new LinkedList<Country>();
-        countries.AddLast(new Country("North America", new Population(368869647, 1, 0, 0, 0), 1, 1));
-        countries.AddLast(new Country("South America", new Population(431969015, 0, 0, 0, 0), 40, 50));
-        countries.AddLast(new Country("Europe", new Population(747793556, 0, 0, 0, 0), 50, 60));
-        countries.AddLast(new Country("Africa", new Population(1347333004, 0, 0, 0, 0), 30, 30));
-        countries.AddLast(new Country("Asia", new Population(1654850282/*4654850282*/, 0, 0, 0, 0), 60, 50));
-        countries.AddLast(new Country("Oceania", new Population(38820000, 0, 0, 0, 0), 70, 70));
+        countries.AddLast(new Country("North America", new Population(368869647, 100000000, 0, 0, 0, dot1), 1, 1));
+        countries.AddLast(new Country("South America", new Population(431969015, 0, 0, 0, 0, dot2), 40, 50));
+        countries.AddLast(new Country("Europe", new Population(747793556, 0, 0, 0, 0, dot3), 50, 60));
+        countries.AddLast(new Country("Africa", new Population(1347333004, 0, 0, 0, 0, dot4), 30, 30));
+        countries.AddLast(new Country("Asia", new Population(1654850282/*4654850282*/, 0, 0, 0, 0, dot5), 60, 50));
+        countries.AddLast(new Country("Oceania", new Population(38820000, 0, 0, 0, 0, dot6), 70, 70));
 
         //Link each population to it's country/continent
         foreach (Country place in countries)
@@ -114,7 +135,7 @@ public class Main : MonoBehaviour
                 rot = Quaternion.AngleAxis(angle, Vector3.forward);
                 planeImage = Instantiate(planePrefab, start, rot);
                 planeImage.transform.parent = canvas.transform;
-                planeImage.transform.SetSiblingIndex(1); //Set the planes in front of the map but behind everything else
+                planeImage.transform.SetSiblingIndex(3); //Set the planes in front of the maps but behind everything else
                 planes.AddLast(new Plane(start, end, rot, planeImage, route.getTravelProb()*300));
             }
         }

@@ -1,16 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine.UI;
 
 //Represents a population (e.g. country, continent, world, etc.)
-public class Population : MonoBehaviour
+public class Population
 {
+    //Class variables
     private int total;
     private int healthy;
     private int immune;
     private int deceased;
     private Country parent;
-    
+    private Image infectionDot;
+
     //Dictionary storing the values of each stage of infected in either the "standard" or "healing" category (indexes 0 and 1 respectively)
     private Dictionary<Virus.Stages, int[]> infected = new Dictionary<Virus.Stages, int[]>() {
         {Virus.Stages.Asymptotic, new int[]{0,0}},
@@ -20,7 +21,7 @@ public class Population : MonoBehaviour
     }; 
     
     // Standard constructor for Population object
-    public Population(int total, int asymptotic, int mild, int severe, int deadly)
+    public Population(int total, int asymptotic, int mild, int severe, int deadly, Image infectionDot)
     {
         this.total = total;
         this.infected[Virus.Stages.Asymptotic][0] = asymptotic;
@@ -28,6 +29,7 @@ public class Population : MonoBehaviour
         this.infected[Virus.Stages.Severe][0] = severe;
         this.infected[Virus.Stages.Deadly][0] = deadly;
         this.healthy = total - asymptotic - mild - severe - deadly;
+        this.infectionDot = infectionDot;
     }
 
     // Cycles one day forward in ticks (e.g. days)
@@ -111,6 +113,10 @@ public class Population : MonoBehaviour
         detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Severe] * getSevere(0), 1, 0, getSevere(0)), Virus.Stages.Severe);
         detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Mild] * getMild(0), 1, 0, getMild(0)), Virus.Stages.Mild);
         detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Deadly] * getDeadly(0), 1, 0, getDeadly(0)), Virus.Stages.Deadly);
+
+        //Update the infection dot
+        float scale = (float)getInfected() / (float)getTotal();
+        infectionDot.transform.localScale = new UnityEngine.Vector3(scale, scale);
     }
 
     public int getTotal()

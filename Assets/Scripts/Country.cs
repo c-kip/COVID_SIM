@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Country : MonoBehaviour
+public class Country
 {
+    //Class variables
     private string countryName;
     private Population people;
     private LinkedList<TravelRoute> transportRoutes;
@@ -13,6 +12,7 @@ public class Country : MonoBehaviour
     private double invHealthRating;
     private double invHospitalRating;
 
+    //Stats to use for spread, stages transfer, and detection rates
     public Dictionary<Virus.Stages, double> infSpreadRatesLocal = new Dictionary<Virus.Stages, double>();
     public Dictionary<Virus.Stages, double[]> infStageIncRatesLocal = new Dictionary<Virus.Stages, double[]>();
     public Dictionary<Virus.Stages, double[]> infStageDecRatesLocal = new Dictionary<Virus.Stages, double[]>();
