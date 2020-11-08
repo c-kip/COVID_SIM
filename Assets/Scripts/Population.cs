@@ -9,7 +9,7 @@ public class Population : MonoBehaviour
     private int healthy;
     private int immune;
     private int deceased;
-    //Virus.Stages to represent different levels of infection
+    private Country parent;
     
     //Dictionary storing the values of each stage of infected in either the "standard" or "healing" category (indexes 0 and 1 respectively)
     private Dictionary<Virus.Stages, int[]> infected = new Dictionary<Virus.Stages, int[]>() {
@@ -37,10 +37,10 @@ public class Population : MonoBehaviour
         cycleStages();
 
         //Increase the number of infected based on non-detected cases
-        incInf(Main.calcRandNum(Virus.infSpreadRates[Virus.Stages.Asymptotic] * getAsymptotic(0), 1/*getAsymptotic() / 10*/, 0, getAsymptotic(0)*5));
-        incInf(Main.calcRandNum(Virus.infSpreadRates[Virus.Stages.Mild] * getMild(0), 1/*getMild() / 10*/, 0, getMild(0) * 5));
-        incInf(Main.calcRandNum(Virus.infSpreadRates[Virus.Stages.Severe] * getSevere(0), 1/*getSevere() / 10*/, 0, getSevere(0) * 5));
-        incInf(Main.calcRandNum(Virus.infSpreadRates[Virus.Stages.Deadly] * getDeadly(0), 1/*getDeadly() / 10*/, 0, getDeadly(0) * 5));
+        incInf(Main.calcRandNum(parent.infSpreadRatesLocal[Virus.Stages.Asymptotic] * getAsymptotic(0), 1/*getAsymptotic() / 10*/, 0, getAsymptotic(0) * 5)) ;
+        incInf(Main.calcRandNum(parent.infSpreadRatesLocal[Virus.Stages.Mild] * getMild(0), 1/*getMild() / 10*/, 0, getMild(0) * 5));
+        incInf(Main.calcRandNum(parent.infSpreadRatesLocal[Virus.Stages.Severe] * getSevere(0), 1/*getSevere() / 10*/, 0, getSevere(0) * 5));
+        incInf(Main.calcRandNum(parent.infSpreadRatesLocal[Virus.Stages.Deadly] * getDeadly(0), 1/*getDeadly() / 10*/, 0, getDeadly(0) * 5));
     }
 
     //Increases the base number of infected (infecting healthy individuals)
@@ -94,23 +94,23 @@ public class Population : MonoBehaviour
         for (int i = 0; i <= 1; i++)
         {
             //Map an increment in stage severity
-            moveInf(Main.calcRandNum(Virus.infStageIncRates[Virus.Stages.Asymptotic][i] * getAsymptotic(i), 1, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, Virus.Stages.Mild, i);
-            moveInf(Main.calcRandNum(Virus.infStageIncRates[Virus.Stages.Mild][i] * getMild(i), 1, 0, getMild(i)), Virus.Stages.Mild, Virus.Stages.Severe, i);
-            moveInf(Main.calcRandNum(Virus.infStageIncRates[Virus.Stages.Severe][i] * getSevere(i), 1, 0, getSevere(i)), Virus.Stages.Severe, Virus.Stages.Deadly, i);
-            rmInf(Main.calcRandNum(Virus.infStageIncRates[Virus.Stages.Deadly][i] * getDeadly(i), 1, 0, getDeadly(i)), Virus.Stages.Deadly, 1, i);
+            moveInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Asymptotic][i] * getAsymptotic(i), 1, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, Virus.Stages.Mild, i);
+            moveInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Mild][i] * getMild(i), 1, 0, getMild(i)), Virus.Stages.Mild, Virus.Stages.Severe, i);
+            moveInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Severe][i] * getSevere(i), 1, 0, getSevere(i)), Virus.Stages.Severe, Virus.Stages.Deadly, i);
+            rmInf(Main.calcRandNum(parent.infStageIncRatesLocal[Virus.Stages.Deadly][i] * getDeadly(i), 1, 0, getDeadly(i)), Virus.Stages.Deadly, 1, i);
 
             //Map a decrement in stage severity
-            moveInf(Main.calcRandNum(Virus.infStageDecRates[Virus.Stages.Deadly][i] * getDeadly(i), 1, 0, getDeadly(i)), Virus.Stages.Deadly, Virus.Stages.Severe, i);
-            moveInf(Main.calcRandNum(Virus.infStageDecRates[Virus.Stages.Severe][i] * getSevere(i), 1, 0, getSevere(i)), Virus.Stages.Severe, Virus.Stages.Mild, i);
-            rmInf(Main.calcRandNum(Virus.infStageDecRates[Virus.Stages.Mild][i] * getMild(i), 1, 0, getMild(i)), Virus.Stages.Mild, 0, i);
-            rmInf(Main.calcRandNum(Virus.infStageDecRates[Virus.Stages.Asymptotic][i] * getAsymptotic(i), 1, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, 0, i);
+            moveInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Deadly][i] * getDeadly(i), 1, 0, getDeadly(i)), Virus.Stages.Deadly, Virus.Stages.Severe, i);
+            moveInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Severe][i] * getSevere(i), 1, 0, getSevere(i)), Virus.Stages.Severe, Virus.Stages.Mild, i);
+            rmInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Mild][i] * getMild(i), 1, 0, getMild(i)), Virus.Stages.Mild, 0, i);
+            rmInf(Main.calcRandNum(parent.infStageDecRatesLocal[Virus.Stages.Asymptotic][i] * getAsymptotic(i), 1, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, 0, i);
         }
 
         //Map a change from "standard" to "healing"
-        detect(Main.calcRandNum(Virus.infDetectRates[Virus.Stages.Asymptotic] * getAsymptotic(0), 1, 0, getAsymptotic(0)), Virus.Stages.Asymptotic);
-        detect(Main.calcRandNum(Virus.infDetectRates[Virus.Stages.Severe] * getSevere(0), 1, 0, getSevere(0)), Virus.Stages.Severe);
-        detect(Main.calcRandNum(Virus.infDetectRates[Virus.Stages.Mild] * getMild(0), 1, 0, getMild(0)), Virus.Stages.Mild);
-        detect(Main.calcRandNum(Virus.infDetectRates[Virus.Stages.Deadly] * getDeadly(0), 1, 0, getDeadly(0)), Virus.Stages.Deadly);
+        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Asymptotic] * getAsymptotic(0), 1, 0, getAsymptotic(0)), Virus.Stages.Asymptotic);
+        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Severe] * getSevere(0), 1, 0, getSevere(0)), Virus.Stages.Severe);
+        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Mild] * getMild(0), 1, 0, getMild(0)), Virus.Stages.Mild);
+        detect(Main.calcRandNum(parent.infDetectRatesLocal[Virus.Stages.Deadly] * getDeadly(0), 1, 0, getDeadly(0)), Virus.Stages.Deadly);
     }
 
     public int getTotal()
@@ -195,5 +195,10 @@ public class Population : MonoBehaviour
         {
             return this.infected[Virus.Stages.Deadly][0] + this.infected[Virus.Stages.Deadly][1];
         }
+    }
+
+    public void setParent(Country parent)
+    {
+        this.parent = parent;
     }
 }

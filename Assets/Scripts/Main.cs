@@ -2,13 +2,14 @@
  * Handles the main countries or continents, and updating the simulation
  * (on a day to day basis).
  * 
- * Note: There are a couple current bugs:
+ * Note: There are a few current bugs/issues:
  *      1) Asia's population cannot be represented with an int (need a long)
  *         This would require redoing a large section of the code, which I'll (hopefully)
  *         eventually get around to
  *      2) The randomizer is broken. Badly. Right now it just brute forces it (within a
  *         certain number of attempts) for a random value within a range with specific
  *         distribution. I can't figure out the math to do this better, so IDK.
+ *      3) I need to get proper standard deviations for the randomizer.
  */
 using System;
 using System.Collections;
@@ -22,7 +23,7 @@ public class Main : MonoBehaviour
     public static System.Random rng;
     private Population canadians;
     private Country Canada;
-    private LinkedList<Country> countries;
+    private static LinkedList<Country> countries;
     private const int MAX_DAYS = 365;
     private int days;
     private const bool DEBUG = false;
@@ -70,12 +71,18 @@ public class Main : MonoBehaviour
 
         //Create the countries (or continents) that we'll use
         countries = new LinkedList<Country>();
-        countries.AddLast(new Country("North America", new Population(368869647, 1, 0, 0, 0), 10));
-        countries.AddLast(new Country("South America", new Population(431969015, 0, 0, 0, 0), 10));
-        countries.AddLast(new Country("Europe", new Population(747793556, 0, 0, 0, 0), 10));
-        countries.AddLast(new Country("Africa", new Population(1347333004, 0, 0, 0, 0), 10));
-        countries.AddLast(new Country("Asia", new Population(1654850282/*4654850282*/, 0, 0, 0, 0), 10));
-        countries.AddLast(new Country("Oceania", new Population(38820000, 0, 0, 0, 0), 10));
+        countries.AddLast(new Country("North America", new Population(368869647, 1, 0, 0, 0), 1, 1));
+        countries.AddLast(new Country("South America", new Population(431969015, 0, 0, 0, 0), 40, 50));
+        countries.AddLast(new Country("Europe", new Population(747793556, 0, 0, 0, 0), 50, 60));
+        countries.AddLast(new Country("Africa", new Population(1347333004, 0, 0, 0, 0), 30, 30));
+        countries.AddLast(new Country("Asia", new Population(1654850282/*4654850282*/, 0, 0, 0, 0), 60, 50));
+        countries.AddLast(new Country("Oceania", new Population(38820000, 0, 0, 0, 0), 70, 70));
+
+        //Link each population to it's country/continent
+        foreach (Country place in countries)
+        {
+            place.setPopParent();
+        }
 
         //Add transportation routes
         countries.ElementAt(0).addTransportRoute(countries.ElementAt(1), 0.1);
@@ -107,7 +114,7 @@ public class Main : MonoBehaviour
                 rot = Quaternion.AngleAxis(angle, Vector3.forward);
                 planeImage = Instantiate(planePrefab, start, rot);
                 planeImage.transform.parent = canvas.transform;
-                planeImage.transform.SetSiblingIndex(1);
+                planeImage.transform.SetSiblingIndex(1); //Set the planes in front of the map but behind everything else
                 planes.AddLast(new Plane(start, end, rot, planeImage, route.getTravelProb()*300));
             }
         }
@@ -147,8 +154,6 @@ public class Main : MonoBehaviour
 
         //yield on a new YieldInstruction that waits for x seconds.
         yield return new WaitForSeconds(1);
-
-        dayCounter.text = "Day: " + days;
 
         Population pop;
         String debug;
@@ -198,8 +203,9 @@ public class Main : MonoBehaviour
             }
         }
 
-        //Increment the loop counter and go again
+        //Increment the day counter and go again
         days++;
+        dayCounter.text = "Day: " + days;
         StartCoroutine(dailyCycle(days));
     }
 
@@ -273,5 +279,19 @@ public class Main : MonoBehaviour
             countryStats.text = dispCountry.ToString();
             statsCountryName = dispCountry.getName();
         }
+    }
+
+    //Returns a country if a name match is found
+    public static Country findCountry(string countryName)
+    {
+        foreach (Country place in countries)
+        {
+            Debug.Log(place.getName() + "-" + countryName);
+            if (place.getName() == countryName)
+            {
+                return place;
+            }
+        }
+        return null;
     }
 }

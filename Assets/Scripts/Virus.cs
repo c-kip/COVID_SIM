@@ -5,7 +5,8 @@ using UnityEngine;
 //Represents the virus
 public class Virus
 {
-    public const int MAX_SPREAD = 100;
+    //public const int MAX_SPREAD = 100;
+    //Virus.Stages to represent different levels of infection
     public enum Stages
     {
         Asymptotic,

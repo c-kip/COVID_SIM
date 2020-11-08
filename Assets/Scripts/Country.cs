@@ -8,35 +8,54 @@ public class Country : MonoBehaviour
     private string countryName;
     private Population people;
     private LinkedList<TravelRoute> transportRoutes;
-    private double healthRating;
+    private double healthRating; //1 to 100 (higher is better)
+    private double hospitalRating; //1 to 100 (higher is better)
     private double invHealthRating;
+    private double invHospitalRating;
 
     public Dictionary<Virus.Stages, double> infSpreadRatesLocal = new Dictionary<Virus.Stages, double>();
     public Dictionary<Virus.Stages, double[]> infStageIncRatesLocal = new Dictionary<Virus.Stages, double[]>();
     public Dictionary<Virus.Stages, double[]> infStageDecRatesLocal = new Dictionary<Virus.Stages, double[]>();
     public Dictionary<Virus.Stages, double> infDetectRatesLocal = new Dictionary<Virus.Stages, double>();
 
-    public Country(string countryName, Population people, double healthRating)
+    public Country(string countryName, Population people, double healthRating, double hospitalRating)
     {
         this.countryName = countryName;
         this.people = people;
         this.healthRating = healthRating;
+        this.hospitalRating = hospitalRating;
         this.invHealthRating = Math.Pow(healthRating, -1);
+        this.invHospitalRating = Math.Pow(hospitalRating, -1);
         transportRoutes = new LinkedList<TravelRoute>();
 
         foreach (Virus.Stages stage in Enum.GetValues(typeof(Virus.Stages)))
         {
-            infSpreadRatesLocal.Add(stage, Virus.infSpreadRates[stage] * invHealthRating);
-            infStageIncRatesLocal.Add(stage, new double[] { Virus.infStageIncRates[stage][0] * invHealthRating, Virus.infStageIncRates[stage][1] * invHealthRating });
-            infStageDecRatesLocal.Add(stage, new double[] { Virus.infStageDecRates[stage][0] * invHealthRating, Virus.infStageDecRates[stage][1] * invHealthRating });
-            infDetectRatesLocal.Add(stage, Virus.infDetectRates[stage] * invHealthRating);
+            //If the stage is severe or deadly, and the virus is detected then use hospital ratings
+            if (stage == Virus.Stages.Severe || stage == Virus.Stages.Deadly)
+            {
+                infSpreadRatesLocal.Add(stage, Virus.infSpreadRates[stage] * invHealthRating);
+                infStageIncRatesLocal.Add(stage, new double[] { Virus.infStageIncRates[stage][0] * invHealthRating, Virus.infStageIncRates[stage][1] * invHospitalRating });
+                infStageDecRatesLocal.Add(stage, new double[] { Virus.infStageDecRates[stage][0] * invHealthRating, Virus.infStageDecRates[stage][1] * invHospitalRating });
+                infDetectRatesLocal.Add(stage, Virus.infDetectRates[stage] * invHealthRating);
+            } else
+            { //Otherwise, use the standard health rating of the country/continent
+                infSpreadRatesLocal.Add(stage, Virus.infSpreadRates[stage] * invHealthRating);
+                infStageIncRatesLocal.Add(stage, new double[] { Virus.infStageIncRates[stage][0] * invHealthRating, Virus.infStageIncRates[stage][1] * invHealthRating });
+                infStageDecRatesLocal.Add(stage, new double[] { Virus.infStageDecRates[stage][0] * invHealthRating, Virus.infStageDecRates[stage][1] * invHealthRating });
+                infDetectRatesLocal.Add(stage, Virus.infDetectRates[stage] * invHealthRating);
+            }
         }
+    }
+
+    public void setPopParent()
+    {
+        this.people.setParent(this);
     }
 
     //Transport random numbers of gaussian distributed passengers between countries
     public void transportInf()
     {
-        int travellers = 0;
+        int travellers;
         foreach (TravelRoute route in transportRoutes)
         {
             Population otherPeople;
@@ -111,6 +130,7 @@ public class Country : MonoBehaviour
     {
         return this.getName() + "\n" +
                 "Health Rating: " + healthRating + "\n" +
+                "Hospital Rating: " + hospitalRating + "\n" +
                 "Population: " + people.getTotal() + "\n" +
                 "Healthy: " + people.getHealthy() + "\n" +
                 "Immune: " + people.getImmune() + "\n" +
