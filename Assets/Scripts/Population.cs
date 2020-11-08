@@ -57,17 +57,21 @@ public class Population : MonoBehaviour
         this.infected[end][type] += num;
     }
 
-    //Move infected out of infected state (either immune or deceased)
-    private void rmInf(int num, Virus.Stages start, bool immunity, int type)
+    //Move infected out of infected state (either immune, deceased, or in another country)
+    //0 = immune, 1 = deceased, 2 = moved countries
+    public void rmInf(int num, Virus.Stages start, int state, int type)
     {
         this.infected[start][type] -= num;
-        if (immunity)
+        if (state == 0)
         {
             immune += num;
-        } else
+        } else if (state == 1)
         {
             total -= num;
             deceased += num;
+        } else if (state == 2)
+        {
+            total -= num;
         }
     }
 
@@ -86,13 +90,13 @@ public class Population : MonoBehaviour
             moveInf(Main.calcRandNum(Virus.infStageIncRates[Virus.Stages.Asymptotic][i] * getAsymptotic(i), 1, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, Virus.Stages.Mild, i);
             moveInf(Main.calcRandNum(Virus.infStageIncRates[Virus.Stages.Mild][i] * getMild(i), 1, 0, getMild(i)), Virus.Stages.Mild, Virus.Stages.Severe, i);
             moveInf(Main.calcRandNum(Virus.infStageIncRates[Virus.Stages.Severe][i] * getSevere(i), 1, 0, getSevere(i)), Virus.Stages.Severe, Virus.Stages.Deadly, i);
-            rmInf(Main.calcRandNum(Virus.infStageIncRates[Virus.Stages.Deadly][i] * getDeadly(i), 1, 0, getDeadly(i)), Virus.Stages.Deadly, false, i);
+            rmInf(Main.calcRandNum(Virus.infStageIncRates[Virus.Stages.Deadly][i] * getDeadly(i), 1, 0, getDeadly(i)), Virus.Stages.Deadly, 1, i);
 
             //Map a decrement in stage severity
             moveInf(Main.calcRandNum(Virus.infStageDecRates[Virus.Stages.Deadly][i] * getDeadly(i), 1, 0, getDeadly(i)), Virus.Stages.Deadly, Virus.Stages.Severe, i);
             moveInf(Main.calcRandNum(Virus.infStageDecRates[Virus.Stages.Severe][i] * getSevere(i), 1, 0, getSevere(i)), Virus.Stages.Severe, Virus.Stages.Mild, i);
-            rmInf(Main.calcRandNum(Virus.infStageDecRates[Virus.Stages.Mild][i] * getMild(i), 1, 0, getMild(i)), Virus.Stages.Mild, true, i);
-            rmInf(Main.calcRandNum(Virus.infStageDecRates[Virus.Stages.Asymptotic][i] * getAsymptotic(i), 1, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, true, i);
+            rmInf(Main.calcRandNum(Virus.infStageDecRates[Virus.Stages.Mild][i] * getMild(i), 1, 0, getMild(i)), Virus.Stages.Mild, 0, i);
+            rmInf(Main.calcRandNum(Virus.infStageDecRates[Virus.Stages.Asymptotic][i] * getAsymptotic(i), 1, 0, getAsymptotic(i)), Virus.Stages.Asymptotic, 0, i);
         }
 
         //Map a change from "standard" to "healing"
