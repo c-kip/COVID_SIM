@@ -11,10 +11,10 @@ public class Country : MonoBehaviour
     private double healthRating;
     private double invHealthRating;
 
-    public static Dictionary<Virus.Stages, double> infSpreadRates = new Dictionary<Virus.Stages, double>();
-    public static Dictionary<Virus.Stages, double[]> infStageIncRates = new Dictionary<Virus.Stages, double[]>();
-    public static Dictionary<Virus.Stages, double[]> infStageDecRates = new Dictionary<Virus.Stages, double[]>();
-    public static Dictionary<Virus.Stages, double> infDetectRates = new Dictionary<Virus.Stages, double>();
+    public Dictionary<Virus.Stages, double> infSpreadRatesLocal = new Dictionary<Virus.Stages, double>();
+    public Dictionary<Virus.Stages, double[]> infStageIncRatesLocal = new Dictionary<Virus.Stages, double[]>();
+    public Dictionary<Virus.Stages, double[]> infStageDecRatesLocal = new Dictionary<Virus.Stages, double[]>();
+    public Dictionary<Virus.Stages, double> infDetectRatesLocal = new Dictionary<Virus.Stages, double>();
 
     public Country(string countryName, Population people, double healthRating)
     {
@@ -23,15 +23,13 @@ public class Country : MonoBehaviour
         this.healthRating = healthRating;
         this.invHealthRating = Math.Pow(healthRating, -1);
         transportRoutes = new LinkedList<TravelRoute>();
-        
+
         foreach (Virus.Stages stage in Enum.GetValues(typeof(Virus.Stages)))
         {
-            /*
-            infSpreadRates.Add(stage, Virus.infSpreadRates[stage] * invHealthRating);
-            infStageIncRates.Add(stage, new double[] { Virus.infStageIncRates[stage][0] * invHealthRating, Virus.infStageIncRates[stage][1] * invHealthRating });
-            infStageDecRates.Add(stage, new double[] { Virus.infStageDecRates[stage][0] * invHealthRating, Virus.infStageDecRates[stage][1] * invHealthRating });
-            infDetectRates.Add(stage, Virus.infDetectRates[stage] * invHealthRating);
-            */
+            infSpreadRatesLocal.Add(stage, Virus.infSpreadRates[stage] * invHealthRating);
+            infStageIncRatesLocal.Add(stage, new double[] { Virus.infStageIncRates[stage][0] * invHealthRating, Virus.infStageIncRates[stage][1] * invHealthRating });
+            infStageDecRatesLocal.Add(stage, new double[] { Virus.infStageDecRates[stage][0] * invHealthRating, Virus.infStageDecRates[stage][1] * invHealthRating });
+            infDetectRatesLocal.Add(stage, Virus.infDetectRates[stage] * invHealthRating);
         }
     }
 

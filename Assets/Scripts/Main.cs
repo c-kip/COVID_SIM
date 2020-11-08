@@ -107,6 +107,7 @@ public class Main : MonoBehaviour
                 rot = Quaternion.AngleAxis(angle, Vector3.forward);
                 planeImage = Instantiate(planePrefab, start, rot);
                 planeImage.transform.parent = canvas.transform;
+                planeImage.transform.SetSiblingIndex(1);
                 planes.AddLast(new Plane(start, end, rot, planeImage, route.getTravelProb()*300));
             }
         }
