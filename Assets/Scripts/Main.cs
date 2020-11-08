@@ -63,7 +63,8 @@ public class Main : MonoBehaviour
         countries.AddLast(new Country("Oceania", new Population(38820000, 0, 0, 0, 0), 10));
 
         //Add transportation routes
-        countries.ElementAt(0).addTransportRoute(countries.ElementAt(1));
+        countries.ElementAt(0).addTransportRoute(countries.ElementAt(1), 0.5);
+        countries.ElementAt(1).addTransportRoute(countries.ElementAt(0), 0.5);
 
         //Link the buttons
         northAmericaButton.onClick.AddListener(delegate { displayCountryStats(countries.ElementAt(0)); });
@@ -101,6 +102,7 @@ public class Main : MonoBehaviour
         {
             pop = place.getPeople();
             pop.cycle();
+            place.transportInf();
 
             if (DEBUG)
             {
@@ -187,6 +189,7 @@ public class Main : MonoBehaviour
         {
             statsBackground.SetActive(false);
             countryStats.text = "";
+            statsCountryName = "";
         } else
         {
             Population pop = dispCountry.getPeople();

@@ -59,9 +59,9 @@ public class Population : MonoBehaviour
 
     //Move infected out of infected state (either immune, deceased, or in another country)
     //0 = immune, 1 = deceased, 2 = moved countries
-    public void rmInf(int num, Virus.Stages start, int state, int type)
+    public void rmInf(int num, Virus.Stages start, int state, int detected)
     {
-        this.infected[start][type] -= num;
+        this.infected[start][detected] -= num;
         if (state == 0)
         {
             immune += num;
@@ -73,6 +73,13 @@ public class Population : MonoBehaviour
         {
             total -= num;
         }
+    }
+
+    //Move infected into the infected counters (these are from another country)
+    public void addInf(int num, Virus.Stages start, int detected)
+    {
+        this.infected[start][detected] += num;
+        total += num;
     }
 
     private void detect(int num, Virus.Stages start)

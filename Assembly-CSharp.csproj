@@ -66,6 +66,7 @@
     <Compile Include="Assets\Scripts\Country.cs" />
     <Compile Include="Assets\Scripts\Main.cs" />
     <Compile Include="Assets\Scripts\Population.cs" />
+    <Compile Include="Assets\Scripts\TravelRoute.cs" />
     <Compile Include="Assets\Scripts\Virus.cs" />
     <Reference Include="UnityEngine">
       <HintPath>D:/Program Files/Unity Editors/2019.4.14f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
