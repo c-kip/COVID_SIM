@@ -2,13 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Main : MonoBehaviour
 {
     public static System.Random rng;
     private Population canadians;
     private Country Canada;
+    private LinkedList<Country> countries;
     private const int MAX_LOOPS = 20;
+    private int days;
+
+    //Debugging tools
+    public Text northAmerica;
+    public Text southAmerica;
+    public Text africa;
+    public Text europe;
+    public Text asia;
+    public Text oceania;
 
     // Start is called before the first frame update
     void Start()
@@ -17,16 +28,23 @@ public class Main : MonoBehaviour
         rng = new System.Random();
 
         //Create the countries (or continents) that we'll use
-        canadians = new Population(1000, 1, 0, 0, 0);
+        countries = new LinkedList<Country>();
+        countries.AddLast(new Country("North America", new Population(1000, 1, 0, 0, 0), 10));
+        countries.AddLast(new Country("South America", new Population(1000, 1, 0, 0, 0), 10));
+        countries.AddLast(new Country("Africa", new Population(1000, 1, 0, 0, 0), 10));
+        countries.AddLast(new Country("Europe", new Population(1000, 1, 0, 0, 0), 10));
+        countries.AddLast(new Country("Asia", new Population(1000, 1, 0, 0, 0), 10));
+        countries.AddLast(new Country("Oceania", new Population(1000, 1, 0, 0, 0), 10));
+        //canadians = new Population(1000, 1, 0, 0, 0);
 
-        int i = 0;
-        StartCoroutine(dailyCycle(i));
+        days = 0;
+        StartCoroutine(dailyCycle(days));
     }
 
     //Create a Coroutine 
-    public IEnumerator dailyCycle(int i)
+    public IEnumerator dailyCycle(int days)
     {
-        if (i > MAX_LOOPS)
+        if (days > MAX_LOOPS)
         {
             yield return null;
         }
@@ -34,20 +52,53 @@ public class Main : MonoBehaviour
         //yield on a new YieldInstruction that waits for x seconds.
         yield return new WaitForSeconds(1);
 
+        Population pop;
+        String debug;
         //Print out the calculated random number
-        canadians.cycle();
-        Debug.Log("Population: " + canadians.getTotal());
-        Debug.Log("   Healthy: " + canadians.getHealthy());
-        Debug.Log("    Immune: " + canadians.getImmune());
-        Debug.Log("  Infected: " + canadians.getInfected());
-        Debug.Log("Asymptotic: " + canadians.getAsymptotic(2) + " 0: " + canadians.getAsymptotic(0) + " 1: " + canadians.getAsymptotic(1));
-        Debug.Log("      Mild: " + canadians.getMild(2) + " 0: " + canadians.getMild(0) + " 1: " + canadians.getMild(1));
-        Debug.Log("    Severe: " + canadians.getSevere(2) + " 0: " + canadians.getSevere(0) + " 1: " + canadians.getSevere(1));
-        Debug.Log("    Deadly: " + canadians.getDeadly(2) + " 0: " + canadians.getDeadly(0) + " 1: " + canadians.getDeadly(1));
+        foreach (Country place in countries)
+        {
+            pop = place.getPeople();
+            pop.cycle();
+
+            //Debug information
+            debug = "Population: " + pop.getTotal() + "\n" +
+                                        "Healthy: " + pop.getHealthy() + "\n" +
+                                        "Immune: " + pop.getImmune() + "\n" +
+                                        "Infected: " + pop.getInfected() + "\n" +
+                                        "Asymptotic: " + pop.getAsymptotic(2) + " - Undetected:" + pop.getAsymptotic(0) + " - Detected:" + pop.getAsymptotic(1) + "\n" +
+                                        "Mild: " + pop.getMild(2) + " - Undetected:" + pop.getMild(0) + " - Detected:" + pop.getMild(1) + "\n" +
+                                        "Severe: " + pop.getSevere(2) + " - Undetected:" + pop.getSevere(0) + " - Detected:" + pop.getSevere(1) + "\n" +
+                                        "Deadly: " + pop.getDeadly(2) + " - Undetected:" + pop.getDeadly(0) + " - Detected:" + pop.getDeadly(1);
+
+            //Put the debug info on the screen
+            switch (place.getName())
+            {
+                case "North America":
+                    northAmerica.text = debug;
+                    break;
+                case "South America":
+                    southAmerica.text = debug;
+                    break;
+                case "Africa":
+                    africa.text = debug;
+                    break;
+                case "Europe":
+                    europe.text = debug;
+                    break;
+                case "Asia":
+                    asia.text = debug;
+                    break;
+                case "Oceania":
+                    oceania.text = debug;
+                    break;
+                default:
+                    break;
+            }
+        }
 
         //Increment the loop counter and go again
-        i++;
-        StartCoroutine(dailyCycle(i));
+        days++;
+        StartCoroutine(dailyCycle(days));
     }
 
     // Calculates a random number based on gaussian distribution for the given mean and standard deviation

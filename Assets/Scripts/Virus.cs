@@ -19,17 +19,17 @@ public class Virus
         {Stages.Severe, 0.05},
         {Stages.Deadly, 0.01}
     };
-    public static Dictionary<Stages, double> infStageIncRates = new Dictionary<Stages, double>() {
-        {Stages.Asymptotic, 0.1},
-        {Stages.Mild, 0.01},
-        {Stages.Severe, 0.1},
-        {Stages.Deadly, 0}
+    public static Dictionary<Stages, double[]> infStageIncRates = new Dictionary<Stages, double[]>() {
+        {Stages.Asymptotic, new double[]{0.1, 0}},
+        {Stages.Mild, new double[]{0.01, 0}},
+        {Stages.Severe, new double[]{0.1, 0}},
+        {Stages.Deadly, new double[]{0, 0}}
     };
-    public static Dictionary<Stages, double> infStageDecRates = new Dictionary<Stages, double>() {
-        {Stages.Asymptotic, 0.1},
-        {Stages.Mild, 0.1},
-        {Stages.Severe, 0.05},
-        {Stages.Deadly, 0}
+    public static Dictionary<Stages, double[]> infStageDecRates = new Dictionary<Stages, double[]>() {
+        {Stages.Asymptotic, new double[]{0.1, 0}},
+        {Stages.Mild, new double[]{0.1, 0}},
+        {Stages.Severe, new double[]{0.05, 0}},
+        {Stages.Deadly, new double[]{0, 0}}
     };
     public static Dictionary<Stages, double> infDetectRates = new Dictionary<Stages, double>() {
         {Stages.Asymptotic, 0.01},
