@@ -59,6 +59,7 @@
      <Compile Include="Assets\Scripts\Main.cs" />
      <Compile Include="Assets\Scripts\Plane.cs" />
      <Compile Include="Assets\Scripts\Population.cs" />
+     <Compile Include="Assets\Scripts\SceneChanger.cs" />
      <Compile Include="Assets\Scripts\TravelRoute.cs" />
      <Compile Include="Assets\Scripts\Virus.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
