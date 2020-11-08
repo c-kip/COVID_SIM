@@ -26,7 +26,7 @@ public class Main : MonoBehaviour
     private Country Canada;
     private static LinkedList<Country> countries;
     private const int MAX_DAYS = 365;
-    private const float TIME_DELAY = 0.1f;
+    private const float TIME_DELAY = 0.5f;
     private int days;
     private const bool DEBUG = false;
     private string statsCountryName = "";
@@ -51,13 +51,13 @@ public class Main : MonoBehaviour
     public Image dotPrefab;
 
     //Locations and rotations
-    private static Vector3 canvasPos = new Vector3(546, 231.5f, 0);
-    private Vector3 NA = new Vector3(-290,  60, 0) + canvasPos;
-    private Vector3 SA = new Vector3(-170, -90, 0) + canvasPos;
-    private Vector3 EU = new Vector3(  80,  90, 0) + canvasPos;
-    private Vector3 AF = new Vector3(  50, -30, 0) + canvasPos;
-    private Vector3 AS = new Vector3( 250,  80, 0) + canvasPos;
-    private Vector3 OC = new Vector3( 380,-110, 0) + canvasPos;
+    private static Vector3 canvasPos = new Vector3(960f, 540f, 0);
+    private Vector3 NA = new Vector3(-482, 216, 0) + canvasPos;
+    private Vector3 SA = new Vector3(-305,-128, 0) + canvasPos;
+    private Vector3 EU = new Vector3( 134, 268, 0) + canvasPos;
+    private Vector3 AF = new Vector3(  68,  25, 0) + canvasPos;
+    private Vector3 AS = new Vector3( 423, 252, 0) + canvasPos;
+    private Vector3 OC = new Vector3( 642,-201, 0) + canvasPos;
 
     //Debugging tools
     public Text northAmerica;
@@ -77,22 +77,22 @@ public class Main : MonoBehaviour
         //Create the infection dots
         Image dot1 = Instantiate(dotPrefab, NA, Quaternion.identity);
         dot1.transform.parent = canvas.transform;
-        dot1.transform.SetSiblingIndex(3); //Set the dots in front of the maps but behind everything else
+        dot1.transform.SetSiblingIndex(5); //Set the dots in front of the maps but behind everything else
         Image dot2 = Instantiate(dotPrefab, SA, Quaternion.identity);
         dot2.transform.parent = canvas.transform;
-        dot2.transform.SetSiblingIndex(3);
+        dot2.transform.SetSiblingIndex(5);
         Image dot3 = Instantiate(dotPrefab, EU, Quaternion.identity);
         dot3.transform.parent = canvas.transform;
-        dot3.transform.SetSiblingIndex(3);
+        dot3.transform.SetSiblingIndex(5);
         Image dot4 = Instantiate(dotPrefab, AF, Quaternion.identity);
         dot4.transform.parent = canvas.transform;
-        dot4.transform.SetSiblingIndex(3);
+        dot4.transform.SetSiblingIndex(5);
         Image dot5 = Instantiate(dotPrefab, AS, Quaternion.identity);
         dot5.transform.parent = canvas.transform;
-        dot5.transform.SetSiblingIndex(3);
+        dot5.transform.SetSiblingIndex(5);
         Image dot6 = Instantiate(dotPrefab, OC, Quaternion.identity);
         dot6.transform.parent = canvas.transform;
-        dot6.transform.SetSiblingIndex(3);
+        dot6.transform.SetSiblingIndex(5);
 
         //Create the countries (or continents) that we'll use
         countries = new LinkedList<Country>();
@@ -137,7 +137,7 @@ public class Main : MonoBehaviour
                 rot = Quaternion.AngleAxis(angle, Vector3.forward);
                 planeImage = Instantiate(planePrefab, start, rot);
                 planeImage.transform.parent = canvas.transform;
-                planeImage.transform.SetSiblingIndex(3); //Set the planes in front of the maps but behind everything else
+                planeImage.transform.SetSiblingIndex(5); //Set the planes in front of the maps but behind everything else
                 planes.AddLast(new Plane(start, end, rot, planeImage, route.getTravelProb()*600));
             }
         }
